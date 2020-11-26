@@ -1,8 +1,9 @@
 package mvc;
 
-import listeners.UndoListener;
-import listeners.TabbedPaneChangeListener;
 import listeners.FrameListener;
+import listeners.TabbedPaneChangeListener;
+import listeners.UndoListener;
+
 import javax.swing.*;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -11,101 +12,87 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * Created by Андрей on 20.10.2016.
- */
-public class View extends JFrame implements ActionListener
-{
+public class View extends JFrame implements ActionListener {
     private Controller controller;
-    private JTabbedPane tabbedPane = new JTabbedPane();
-    private JTextPane htmlTextPane = new JTextPane();
-    private JEditorPane plainTextPane = new JEditorPane();
-    private UndoManager undoManager = new UndoManager();
-    private UndoListener undoListener = new UndoListener(undoManager);
+    private final JTabbedPane tabbedPane = new JTabbedPane();
+    private final JTextPane htmlTextPane = new JTextPane();
+    private final JEditorPane plainTextPane = new JEditorPane();
+    private final UndoManager undoManager = new UndoManager();
+    private final UndoListener undoListener = new UndoListener(undoManager);
 
-    public UndoListener getUndoListener()
-    {
+    public UndoListener getUndoListener() {
         return undoListener;
     }
 
-    public View()
-    {
-        try
-        {
+    public View() {
+        try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e)
-        {
+        } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             ExceptionHandler.log(e);
         }
 
     }
 
-    public void undo()
-    {
-        try
-        {
+    public void undo() {
+        try {
             undoManager.undo();
-        }
-        catch (CannotUndoException e)
-        {
+        } catch (CannotUndoException e) {
             ExceptionHandler.log(e);
         }
     }
 
-    public void redo()
-    {
+    public void redo() {
 
-        try
-        {
+        try {
             undoManager.redo();
-        }
-        catch (CannotRedoException e)
-        {
+        } catch (CannotRedoException e) {
             ExceptionHandler.log(e);
         }
     }
 
-    public void resetUndo()
-    {
+    public void resetUndo() {
         undoManager.discardAllEdits();
     }
 
-    public boolean canUndo()
-    {
+    public boolean canUndo() {
         return undoManager.canUndo();
     }
 
-    public boolean canRedo()
-    {
+    public boolean canRedo() {
         return undoManager.canRedo();
     }
 
-    public Controller getController()
-    {
-        return controller;
-    }
-
-    public void setController(Controller controller)
-    {
+    public void setController(Controller controller) {
         this.controller = controller;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
         String s = e.getActionCommand();
-        if(s.equals("New")) controller.createNewDocument();
-        else if(s.equals("Open")) controller.openDocument();
-        else if(s.equals("Save")) controller.saveDocument();
-        else if(s.equals("Save as...")) controller.saveDocumentAs();
-        else if(s.equals("Exit"))controller.exit();
-        else if(s.equals("About")) showAbout();
+        switch (s) {
+            case "New":
+                controller.createNewDocument();
+                break;
+            case "Open":
+                controller.openDocument();
+                break;
+            case "Save":
+                controller.saveDocument();
+                break;
+            case "Save as...":
+                controller.saveDocumentAs();
+                break;
+            case "Exit":
+                controller.exit();
+                break;
+            case "About":
+                showAbout();
+                break;
+        }
 
     }
 
-    public void init()
-    {
+    public void init() {
         initGui();
         FrameListener listener = new FrameListener(this);
         this.addWindowListener(listener);
@@ -113,13 +100,11 @@ public class View extends JFrame implements ActionListener
         this.setVisible(true);
     }
 
-    public void exit()
-    {
+    public void exit() {
         controller.exit();
     }
 
-    public void initMenuBar()
-    {
+    public void initMenuBar() {
         JMenuBar bar = new JMenuBar();
         MenuHelper.initFileMenu(this, bar);
         MenuHelper.initEditMenu(this, bar);
@@ -131,9 +116,7 @@ public class View extends JFrame implements ActionListener
         getContentPane().add(bar, BorderLayout.NORTH);
     }
 
-    public void initEditor()
-    {
-
+    public void initEditor() {
         htmlTextPane.setContentType("text/html");
         JScrollPane pane1 = new JScrollPane(htmlTextPane);
         tabbedPane.add("HTML", pane1);
@@ -147,36 +130,39 @@ public class View extends JFrame implements ActionListener
 
     }
 
-    public void initGui()
-    {
+    public void initGui() {
         initMenuBar();
         initEditor();
         pack();
     }
 
-    public void selectedTabChanged()
-    {
-        switch (tabbedPane.getSelectedIndex()){
-            case 0:controller.setPlainText(plainTextPane.getText());break;
-            case 1:plainTextPane.setText(controller.getPlainText());break;
+    public void selectedTabChanged() {
+        switch (tabbedPane.getSelectedIndex()) {
+            case 0:
+                controller.setPlainText(plainTextPane.getText());
+                break;
+            case 1:
+                plainTextPane.setText(controller.getPlainText());
+                break;
         }
         resetUndo();
     }
-    public boolean isHtmlTabSelected()
-    {
-        return tabbedPane.getSelectedIndex()==0;
+
+    public boolean isHtmlTabSelected() {
+        return tabbedPane.getSelectedIndex() == 0;
     }
-    public void selectHtmlTab()
-    {
+
+    public void selectHtmlTab() {
         tabbedPane.setSelectedIndex(0);
         resetUndo();
     }
-    public void update()
-    {
+
+    public void update() {
         htmlTextPane.setDocument(controller.getDocument());
     }
-    public void showAbout()
-    {
-        JOptionPane.showMessageDialog(getContentPane(),"This is a simple editor","About",JOptionPane.INFORMATION_MESSAGE);
+
+    public void showAbout() {
+        JOptionPane.showMessageDialog(getContentPane(),
+                "This is a simple editor", "About", JOptionPane.INFORMATION_MESSAGE);
     }
 }

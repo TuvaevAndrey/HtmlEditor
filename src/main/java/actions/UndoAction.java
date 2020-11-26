@@ -4,12 +4,9 @@ import mvc.View;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/**
- * Created by Андрей on 25.10.2016.
- */
 public class UndoAction extends AbstractAction
 {
-    private View view;
+    private final View view;
     public UndoAction(View view)
     {
         this.view = view;

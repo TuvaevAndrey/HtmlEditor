@@ -3,6 +3,7 @@ package mvc;
 import actions.*;
 import listeners.TextEditMenuListener;
 import listeners.UndoMenuListener;
+
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.StyleConstants;

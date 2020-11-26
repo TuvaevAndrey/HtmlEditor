@@ -1,10 +1,8 @@
 package mvc;
 
 
-public class ExceptionHandler
-{
-    public static void log(Exception e)
-    {
+public class ExceptionHandler {
+    public static void log(Exception e) {
         System.out.println(e.toString());
     }
 }

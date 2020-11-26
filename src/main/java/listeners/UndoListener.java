@@ -6,19 +6,15 @@ import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
 
+public class UndoListener implements UndoableEditListener {
+    private final UndoManager undoManager;
 
-public class UndoListener implements UndoableEditListener
-{
-    private UndoManager undoManager;
-
-    public UndoListener(UndoManager undoManager)
-    {
+    public UndoListener(UndoManager undoManager) {
         this.undoManager = undoManager;
     }
 
     @Override
-    public void undoableEditHappened(UndoableEditEvent e)
-    {
+    public void undoableEditHappened(UndoableEditEvent e) {
         UndoableEdit edit = e.getEdit();
         undoManager.addEdit(edit);
     }
